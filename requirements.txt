@@ -3,5 +3,6 @@ numpy
 seaborn
 matplotlib
 catboost
+dill
 #-e .for packaging purpose
 xgboost
