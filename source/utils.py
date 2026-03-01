@@ -5,6 +5,7 @@ import dill
 import numpy as np
 from sklearn.metrics import r2_score
 from source.exception import CustomException
+from sklearn.model_selection import GridSearchCV
 
 def save_object(file_path, obj):
     try:
@@ -15,7 +16,7 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomException(e, sys)
 
-def evaluate_models(x_train, y_train, x_test, y_test, models):
+def evaluate_models(x_train, y_train, x_test, y_test, models,param):
     """
     Evaluate multiple regression models.
     Returns a dictionary with test R² scores only.
@@ -23,11 +24,18 @@ def evaluate_models(x_train, y_train, x_test, y_test, models):
     try:
         report = {}
         for name, model in models.items():
-            model.fit(x_train, y_train)
+            para=param[name]
+            gs=GridSearchCV(model,para,cv=3)
+            gs.fit(x_train,y_train)
+            model.set_params(**gs.best_params_)
+            model.fit(x_train,y_train)
+            #model.fit(x_train, y_train)
+            y_train_pred = model.predict(x_train)
             y_test_pred = model.predict(x_test)
-            test_score = r2_score(y_test, y_test_pred)
+            train_model_score=r2_score(y_train, y_train_pred)
+            test_model_score = r2_score(y_test, y_test_pred)
 
-            report[name] = float(test_score)  # numeric value only
+            report[name] = float(test_model_score)  # numeric value only
 
         return report
     except Exception as e:

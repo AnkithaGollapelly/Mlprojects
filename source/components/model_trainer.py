@@ -39,12 +39,77 @@ class ModelTrainer:
                 "catboost": CatBoostRegressor(verbose=False),
                 "k_nearest": KNeighborsRegressor()
             }
+            params = {
+
+    "linear_regression": {
+        "fit_intercept": [True, False]
+    },
+
+    "ridge": {
+        "alpha": [0.01, 0.1, 1.0, 10.0],
+        "solver": ["auto", "svd", "cholesky"]
+    },
+
+    "lasso": {
+        "alpha": [0.001, 0.01, 0.1, 1.0],
+        "max_iter": [5000, 10000]
+    },
+
+    "decision_tree": {
+        "max_depth": [None, 5, 10, 20],
+        "min_samples_split": [2, 5, 10],
+        "min_samples_leaf": [1, 2, 4],
+        "criterion": ["squared_error", "friedman_mse"]
+    },
+
+    "random_forest": {
+        "n_estimators": [100, 200, 300],
+        "max_depth": [None, 10, 20],
+        "min_samples_split": [2, 5],
+        "min_samples_leaf": [1, 2],
+        "max_features": ["sqrt", "log2"]
+    },
+
+    "gradient_boosting": {
+        "n_estimators": [100, 200],
+        "learning_rate": [0.01, 0.05, 0.1],
+        "max_depth": [3, 5, 7],
+        "subsample": [0.8, 1.0]
+    },
+
+    "adaboost": {
+        "n_estimators": [50, 100, 200],
+        "learning_rate": [0.01, 0.1, 1.0],
+        "loss": ["linear", "square", "exponential"]
+    },
+
+    "xgboost": {
+        "n_estimators": [100, 300],
+        "learning_rate": [0.01, 0.05, 0.1],
+        "max_depth": [3, 6, 9],
+        "subsample": [0.8, 1.0],
+        "colsample_bytree": [0.8, 1.0]
+    },
+
+    "catboost": {
+        "iterations": [200, 300],
+        "learning_rate": [0.01, 0.05, 0.1],
+        "depth": [4, 6, 8],
+        "l2_leaf_reg": [1, 3, 5]
+    },
+
+    "k_nearest": {
+        "n_neighbors": [3, 5, 7, 9],
+        "weights": ["uniform", "distance"],
+        "p": [1, 2]
+    }
+}
 
             # Evaluate models
             model_report: dict = evaluate_models(
                 x_train=x_train, y_train=y_train,
                 x_test=x_test, y_test=y_test,
-                models=models
+                models=models,param=params
             )
 
             # Select best model
